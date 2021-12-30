@@ -181,6 +181,7 @@ export function WalletProvider({ children = null as any }) {
     },
     [provider, providerUrl, endpoint]
   );
+  console.log('wallet', wallet)
 
   const [connected, setConnected] = useState(false);
 
