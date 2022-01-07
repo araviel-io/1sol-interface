@@ -244,12 +244,13 @@ export const TradeEntry = () => {
       const endTime = Date.now()
 
       //@ts-ignore
+      /*
       window.gtag('event', 'api_request_time', {
         url: axiosOption.url,
         method: axiosOption.method,
         data: JSON.stringify(axiosOption.data, null, 2),
         time: endTime - startTime,
-      })
+      })*/
 
       let result: Distribution[] = []
 

@@ -7,8 +7,8 @@ import { AccountsProvider } from "./utils/accounts";
 import { CurrencyPairProvider } from "./utils/currencyPair";
 
 const Exchange = lazy(() => import("./components/exchange"));
-const Dashboard = lazy(() => import("./components/dashboard"));
-const Staking = lazy(() => import("./components/staking"));
+/*const Dashboard = lazy(() => import("./components/dashboard"));
+const Staking = lazy(() => import("./components/staking"));*/
 
 export function Routes() {
   return (
@@ -32,11 +32,11 @@ export function Routes() {
                     <Redirect to="/trade/USDC-1SOL" />
                   </Route>
                   <Route path="/trade/:pair" component={Exchange} />
-                  <Route exact path="/dashboard" component={Dashboard} />
+                  {/*<Route exact path="/dashboard" component={Dashboard} />*/}
                   <Route exact path="/airdrop">
                     <Redirect to="/trade/USDC-1SOL" />
                   </Route>
-                  <Route exact path="/staking" component={Staking} />
+                  {/*<Route exact path="/staking" component={Staking} />*/}
                 </Switch>
               </CurrencyPairProvider>
             </AccountsProvider>

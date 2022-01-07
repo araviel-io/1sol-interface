@@ -1182,9 +1182,10 @@ export async function onesolProtocolSwap(
       } catch (e) {
         const error = e as Error
         //@ts-ignore
+        /*
         window.gtag('event', 'swap_error', {
           data: error?.message
-        })
+        })*/
 
         if (signedTransactions.length === 3 && i === 1) {
           console.log('swap step error: ', e)
