@@ -356,114 +356,6 @@ export class OneSolProtocol {
     }));
   }
 
-  async createSwapByTokenSwapInstruction(
-    {
-      fromTokenAccountKey,
-      toTokenAccountKey,
-      fromMintKey,
-      toMintKey,
-      userTransferAuthority,
-      feeTokenAccount,
-      amountIn,
-      expectAmountOut,
-      minimumAmountOut,
-      splTokenSwapInfo,
-    }: {
-      fromTokenAccountKey: PublicKey;
-      toTokenAccountKey: PublicKey;
-      fromMintKey: PublicKey;
-      toMintKey: PublicKey;
-      userTransferAuthority: PublicKey;
-      feeTokenAccount: PublicKey;
-      amountIn: u64;
-      expectAmountOut: u64;
-      minimumAmountOut: u64;
-      splTokenSwapInfo: TokenSwapInfo;
-    },
-    instructions: Array<TransactionInstruction>,
-    signers: Array<Signer>
-  ): Promise<void> {
-    instructions.push(
-      await OneSolProtocol.makeSwapByTokenSwapInstruction({
-        sourceTokenKey: fromTokenAccountKey,
-        sourceMint: fromMintKey,
-        destinationTokenKey: toTokenAccountKey,
-        destinationMint: toMintKey,
-        transferAuthority: userTransferAuthority,
-        feeTokenAccount: feeTokenAccount,
-        tokenProgramId: this.tokenProgramId,
-        splTokenSwapInfo: splTokenSwapInfo,
-        amountIn: amountIn,
-        expectAmountOut: expectAmountOut,
-        minimumAmountOut: minimumAmountOut,
-        programId: this.programId,
-      })
-    );
-  }
-
-  static async makeSwapByTokenSwapInstruction({
-    sourceTokenKey,
-    sourceMint,
-    destinationTokenKey,
-    destinationMint,
-    transferAuthority,
-    tokenProgramId,
-    feeTokenAccount,
-    splTokenSwapInfo,
-    amountIn,
-    expectAmountOut,
-    minimumAmountOut,
-    programId = ONESOL_PROTOCOL_PROGRAM_ID,
-  }: {
-    sourceTokenKey: PublicKey;
-    sourceMint: PublicKey;
-    destinationTokenKey: PublicKey;
-    destinationMint: PublicKey;
-    transferAuthority: PublicKey;
-    tokenProgramId: PublicKey;
-    feeTokenAccount: PublicKey;
-    splTokenSwapInfo: TokenSwapInfo;
-    amountIn: u64;
-    expectAmountOut: u64;
-    minimumAmountOut: u64;
-    programId?: PublicKey;
-  }): Promise<TransactionInstruction> {
-
-    const dataLayout = BufferLayout.struct([
-      BufferLayout.u8("instruction"),
-      uint64("amountIn"),
-      uint64("expectAmountOut"),
-      uint64("minimumAmountOut"),
-    ]);
-
-    let dataMap: any = {
-      instruction: 3, // Swap instruction
-      amountIn: amountIn.toBuffer(),
-      expectAmountOut: expectAmountOut.toBuffer(),
-      minimumAmountOut: minimumAmountOut.toBuffer(),
-    };
-
-    const keys = [
-      { pubkey: sourceTokenKey, isSigner: false, isWritable: true },
-      { pubkey: destinationTokenKey, isSigner: false, isWritable: true },
-      { pubkey: transferAuthority, isSigner: true, isWritable: false },
-      { pubkey: tokenProgramId, isSigner: false, isWritable: false },
-      { pubkey: feeTokenAccount, isSigner: false, isWritable: true }
-    ];
-
-    const swapKeys = splTokenSwapInfo.toKeys();
-    keys.push(...swapKeys);
-
-    const data = Buffer.alloc(dataLayout.span);
-    dataLayout.encode(dataMap, data);
-
-    return new TransactionInstruction({
-      keys,
-      programId: programId,
-      data,
-    });
-  }
-
   async createSwapInByTokenSwapInstruction(
     {
       fromTokenAccountKey,
@@ -1035,6 +927,7 @@ export async function loadSaberStableSwap(
     programId: PublicKey,
   }
 ): Promise<SaberStableSwapInfo> {
+  console.log("onesol-protocol.ts > loadSaberStableSwap", loadSaberStableSwap)
 
   const data = await loadAccount(connection, address, programId);
   const stableSwapData: any = StableSwapLayout.decode(data);
