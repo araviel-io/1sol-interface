@@ -25,10 +25,10 @@ import {
 } from "./../models";
 import {
   loadTokenSwapInfo,
-  loadSerumDexMarket,
+  //loadSerumDexMarket,
   OneSolProtocol,
   loadSaberStableSwap,
-  loadRaydiumAmmInfo
+  //loadRaydiumAmmInfo
 } from '../utils/onesol-protocol'
 import {
   u64,
@@ -38,11 +38,11 @@ import {
   EXCHANGER_SERUM_DEX,
   EXCHANGER_SPL_TOKEN_SWAP,
   EXCHANGER_SABER_STABLE_SWAP,
-  EXCHANGER_ORCA_SWAP,
+  //EXCHANGER_ORCA_SWAP,
   EXCHANGER_RAYDIUM,
   ONESOL_PROGRAM_ID, WRAPPED_SOL_MINT,
   SERUM_PROGRAM_ID,
-  EXCHANGER_ONEMOON
+  //EXCHANGER_ONEMOON
 } from "./constant";
 
 export const isLatest = (swap: AccountInfo<Buffer>) => {
@@ -546,7 +546,8 @@ async function swap(
   const expectAmountOut = new u64(amount_out)
   const minimumAmountOut = new u64(amount_out * (1 - slippage))
 
-  if ([EXCHANGER_SPL_TOKEN_SWAP, EXCHANGER_ORCA_SWAP, EXCHANGER_ONEMOON].includes(exchanger_flag)) {
+  if ([EXCHANGER_SPL_TOKEN_SWAP].includes(exchanger_flag)) {
+    console.log("L549 - Not saber !")
     const splTokenSwapInfo = await loadTokenSwapInfo(
       connection,
       new PublicKey(pubkey),
@@ -566,30 +567,6 @@ async function swap(
       minimumAmountOut,
       splTokenSwapInfo,
     }, instructions, signers)
-  } else if (exchanger_flag === EXCHANGER_SERUM_DEX) {
-    if (!openOrders) {
-      throw new Error('Open orders not found')
-    }
-
-    const dexMarketInfo = await loadSerumDexMarket(
-      connection,
-      new PublicKey(pubkey),
-      new PublicKey(program_id),
-      openOrders
-    )
-
-    await onesolProtocol.createSwapBySerumDexInstruction({
-      fromTokenAccountKey: fromAccount,
-      toTokenAccountKey: toAccount,
-      fromMintKey,
-      toMintKey,
-      userTransferAuthority,
-      feeTokenAccount,
-      amountIn,
-      expectAmountOut,
-      minimumAmountOut,
-      dexMarketInfo,
-    }, instructions, signers)
   } else if (exchanger_flag === EXCHANGER_SABER_STABLE_SWAP) {
     const stableSwapInfo = await loadSaberStableSwap({
       connection,
@@ -608,25 +585,6 @@ async function swap(
       expectAmountOut,
       minimumAmountOut,
       stableSwapInfo,
-    }, instructions, signers)
-  } else if (exchanger_flag === EXCHANGER_RAYDIUM) {
-    const raydiumInfo = await loadRaydiumAmmInfo({
-      connection,
-      address: new PublicKey(pubkey),
-      programId: new PublicKey(program_id)
-    })
-
-    await onesolProtocol.createSwapByRaydiumSwapInstruction({
-      fromTokenAccountKey: fromAccount,
-      toTokenAccountKey: toAccount,
-      fromMintKey,
-      toMintKey,
-      userTransferAuthority,
-      feeTokenAccount,
-      amountIn,
-      expectAmountOut,
-      minimumAmountOut,
-      raydiumInfo,
     }, instructions, signers)
   }
 }
@@ -681,7 +639,8 @@ async function swapIn(
     swapInfo,
   }
 
-  if ([EXCHANGER_SPL_TOKEN_SWAP, EXCHANGER_ORCA_SWAP, EXCHANGER_ONEMOON].includes(exchanger_flag)) {
+  if ([EXCHANGER_SPL_TOKEN_SWAP].includes(exchanger_flag)) {
+    console.log("L642 - Not saber !")
     const splTokenSwapInfo = await loadTokenSwapInfo(
       connection,
       new PublicKey(pubkey),
@@ -693,22 +652,6 @@ async function swapIn(
       ...data,
       splTokenSwapInfo,
     }, instructions, signers)
-  } else if (exchanger_flag === EXCHANGER_SERUM_DEX) {
-    if (!openOrders) {
-      throw new Error('Open orders not found')
-    }
-
-    const dexMarketInfo = await loadSerumDexMarket(
-      connection,
-      new PublicKey(pubkey),
-      new PublicKey(program_id),
-      openOrders
-    )
-
-    await onesolProtocol.createSwapInBySerumDexInstruction({
-      ...data,
-      dexMarketInfo,
-    }, instructions, signers)
   } else if (exchanger_flag === EXCHANGER_SABER_STABLE_SWAP) {
     const stableSwapInfo = await loadSaberStableSwap({
       connection,
@@ -719,17 +662,6 @@ async function swapIn(
     await onesolProtocol.createSwapInBySaberStableSwapInstruction({
       ...data,
       stableSwapInfo,
-    }, instructions, signers)
-  } else if (exchanger_flag === EXCHANGER_RAYDIUM) {
-    const raydiumInfo = await loadRaydiumAmmInfo({
-      connection,
-      address: new PublicKey(pubkey),
-      programId: new PublicKey(program_id)
-    })
-
-    await onesolProtocol.createSwapInByRaydiumSwap2Instruction({
-      ...data,
-      raydiumInfo,
     }, instructions, signers)
   }
 }
@@ -793,7 +725,8 @@ async function swapOut(
     feeTokenAccount
   }
 
-  if ([EXCHANGER_SPL_TOKEN_SWAP, EXCHANGER_ORCA_SWAP, EXCHANGER_ONEMOON].includes(exchanger_flag)) {
+  if ([EXCHANGER_SPL_TOKEN_SWAP].includes(exchanger_flag)) {
+    console.log("L727 - Not saber !")
     const splTokenSwapInfo = await loadTokenSwapInfo(
       connection,
       new PublicKey(pubkey),
@@ -805,22 +738,6 @@ async function swapOut(
       ...data,
       splTokenSwapInfo,
     }, instructions, signers)
-  } else if (exchanger_flag === EXCHANGER_SERUM_DEX) {
-    if (!openOrders) {
-      throw new Error('Open orders not found')
-    }
-
-    const dexMarketInfo = await loadSerumDexMarket(
-      connection,
-      new PublicKey(pubkey),
-      new PublicKey(program_id),
-      openOrders
-    )
-
-    await onesolProtocol.createSwapOutBySerumDexInstruction({
-      ...data,
-      dexMarketInfo,
-    }, instructions, signers)
   } else if (exchanger_flag === EXCHANGER_SABER_STABLE_SWAP) {
     const stableSwapInfo = await loadSaberStableSwap({
       connection,
@@ -831,17 +748,6 @@ async function swapOut(
     await onesolProtocol.createSwapOutBySaberStableSwapInstruction({
       ...data,
       stableSwapInfo,
-    }, instructions, signers)
-  } else if (exchanger_flag === EXCHANGER_RAYDIUM) {
-    const raydiumInfo = await loadRaydiumAmmInfo({
-      connection,
-      address: new PublicKey(pubkey),
-      programId: new PublicKey(program_id)
-    })
-
-    await onesolProtocol.createSwapOutByRaydiumSwap2Instruction({
-      ...data,
-      raydiumInfo,
     }, instructions, signers)
   }
 }
@@ -940,7 +846,7 @@ export async function createAccountsTransaction(
 
   let swapInOpenOrders
 
-  const swapInSerum = swapInRoutes.find((r: DistributionRoute) => r.exchanger_flag === EXCHANGER_SERUM_DEX)
+  /*const swapInSerum = swapInRoutes.find((r: DistributionRoute) => r.exchanger_flag === EXCHANGER_SERUM_DEX)
 
   if (swapInSerum) {
     swapInOpenOrders = await onesolProtocol.findOrCreateOpenOrdersAccount({
@@ -950,11 +856,11 @@ export async function createAccountsTransaction(
       instructions,
       signers
     })
-  }
+  }*/
 
   let swapOutOpenOrders
 
-  const swapOutSerum = swapOutRoutes.find((r: DistributionRoute) => r.exchanger_flag === EXCHANGER_SERUM_DEX)
+  /*const swapOutSerum = swapOutRoutes.find((r: DistributionRoute) => r.exchanger_flag === EXCHANGER_SERUM_DEX)
 
   if (swapOutSerum) {
     swapOutOpenOrders = await onesolProtocol.findOrCreateOpenOrdersAccount({
@@ -964,7 +870,7 @@ export async function createAccountsTransaction(
       instructions,
       signers
     })
-  }
+  }*/
 
   return {
     swapInfo,
@@ -1086,8 +992,9 @@ export async function onesolProtocolSwap(
     wallet: wallet.publicKey,
     programId: ONESOL_PROGRAM_ID
   })
-
+  console.log("ONESOL METHOD")
   if (!onesolProtocol) {
+    console.log("not onesol")
     return
   }
 
@@ -1213,11 +1120,11 @@ export async function onesolProtocolSwap(
       AccountLayout.span
     );
 
-    const serum = routes.find((r: DistributionRoute) => r.exchanger_flag === EXCHANGER_SERUM_DEX)
+    //const serum = routes.find((r: DistributionRoute) => r.exchanger_flag === EXCHANGER_SERUM_DEX)
 
     let openOrders: PublicKey
 
-    if (serum) {
+    /*if (serum) {
       openOrders = await onesolProtocol.findOrCreateOpenOrdersAccount({
         market: new PublicKey(serum.pubkey),
         owner: wallet.publicKey,
@@ -1225,7 +1132,7 @@ export async function onesolProtocolSwap(
         instructions,
         signers
       })
-    }
+    }*/
 
     const fromMintKey = new PublicKey(A.mintAddress)
     const toMintKey = new PublicKey(B.mintAddress)

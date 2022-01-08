@@ -40,13 +40,13 @@ import { TokenIcon } from "../tokenIcon";
 
 import { 
   PROVIDER_MAP, 
-  TOKEN_SWAP_PROGRAM_ID, 
-  ORCA_PROGRAM_ID, 
-  SERUM_PROGRAM_ID, 
-  RAYDIUM_PROGRAM_ID, 
+  //TOKEN_SWAP_PROGRAM_ID, 
+  //ORCA_PROGRAM_ID, 
+  //SERUM_PROGRAM_ID, 
+  //RAYDIUM_PROGRAM_ID, 
   SABER_PROGRAM_ID,
-  WRAPPED_SOL_MINT, 
-  ONEMOON_PROGRAM_ID
+  WRAPPED_SOL_MINT
+ // ONEMOON_PROGRAM_ID
 } from "../../utils/constant";
 
 
@@ -151,6 +151,8 @@ export const TradeEntry = () => {
 
   const { fetchUserTokenAccounts } = useUserAccounts();
   
+
+  // TODO: this fetchDistrubition have to be bypassed, it uses their api to calculate the route
   const fetchDistrubition = useCallback(async () => {
     if (!A.mint || !B.mint) {
       loading.current = false
@@ -173,12 +175,12 @@ export const TradeEntry = () => {
         source_token_mint_key: A.mintAddress,
         destination_token_mint_key: B.mintAddress,
         programs: [
-          TOKEN_SWAP_PROGRAM_ID.toBase58(),
-          SERUM_PROGRAM_ID.toBase58(),
+          //TOKEN_SWAP_PROGRAM_ID.toBase58(),
+          //SERUM_PROGRAM_ID.toBase58(),
           SABER_PROGRAM_ID.toBase58(),
-          ORCA_PROGRAM_ID.toBase58(),
-          RAYDIUM_PROGRAM_ID.toBase58(),
-          ONEMOON_PROGRAM_ID.toBase58()
+          //ORCA_PROGRAM_ID.toBase58(),
+          //RAYDIUM_PROGRAM_ID.toBase58(),
+          //ONEMOON_PROGRAM_ID.toBase58()
         ],
         support_single_route_per_tx: true,
         distribution_max_len: 4
@@ -190,7 +192,7 @@ export const TradeEntry = () => {
       const swapRoutes: SwapRoute[][] = routes.map((routes: any) => routes.map(({
           amount_in,
           amount_out,
-          exchanger_flag,
+          exchanger_flag, // a lead for Saber
           source_token_mint,
           destination_token_mint
         }: RawDistribution) => ({
@@ -201,6 +203,7 @@ export const TradeEntry = () => {
           provider: PROVIDER_MAP[exchanger_flag],
           ratio: (amount_in / 10 ** source_token_mint.decimals) / routes.reduce((acc: number, cur: any) => acc + cur.amount_in / 10 ** source_token_mint.decimals, 0) * 100
         }
+        
       )))
 
       let labels: string[] = []
@@ -215,7 +218,7 @@ export const TradeEntry = () => {
       })
 
       labels = [...new Set(labels)]
-
+      console.log("route: ", swapRoutes)
       return {routes: swapRoutes, labels}
     }
 
@@ -240,7 +243,7 @@ export const TradeEntry = () => {
       } = await axios({
         ...axiosOption
       })
-
+      console.log("axiosOption : ", axiosOption)
       const endTime = Date.now()
 
       //@ts-ignore
@@ -293,6 +296,7 @@ export const TradeEntry = () => {
       ]
 
       // result list
+      // TODO: maybe the key to enforce manually the route result
       setDistributions(result)
 
       if (!choice.current && result.length) {

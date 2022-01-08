@@ -4,5 +4,5 @@
 // export * from './math'
 // export * from './sollet'
 // export * from './safepal'
-export * from './solareum'
+// export * from './solareum'
 export * from './types'
