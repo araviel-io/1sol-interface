@@ -546,28 +546,7 @@ async function swap(
   const expectAmountOut = new u64(amount_out)
   const minimumAmountOut = new u64(amount_out * (1 - slippage))
 
-  if ([EXCHANGER_SPL_TOKEN_SWAP].includes(exchanger_flag)) {
-    console.log("L549 - Not saber !")
-    const splTokenSwapInfo = await loadTokenSwapInfo(
-      connection,
-      new PublicKey(pubkey),
-      new PublicKey(program_id),
-      null
-    )
-
-    await onesolProtocol.createSwapByTokenSwapInstruction({
-      fromTokenAccountKey: fromAccount,
-      toTokenAccountKey: toAccount,
-      fromMintKey,
-      toMintKey,
-      userTransferAuthority,
-      feeTokenAccount,
-      amountIn,
-      expectAmountOut,
-      minimumAmountOut,
-      splTokenSwapInfo,
-    }, instructions, signers)
-  } else if (exchanger_flag === EXCHANGER_SABER_STABLE_SWAP) {
+  if (exchanger_flag === EXCHANGER_SABER_STABLE_SWAP) {
     const stableSwapInfo = await loadSaberStableSwap({
       connection,
       address: new PublicKey(pubkey),
@@ -639,20 +618,8 @@ async function swapIn(
     swapInfo,
   }
 
-  if ([EXCHANGER_SPL_TOKEN_SWAP].includes(exchanger_flag)) {
-    console.log("L642 - Not saber !")
-    const splTokenSwapInfo = await loadTokenSwapInfo(
-      connection,
-      new PublicKey(pubkey),
-      new PublicKey(program_id),
-      null
-    )
-
-    await onesolProtocol.createSwapInByTokenSwapInstruction({
-      ...data,
-      splTokenSwapInfo,
-    }, instructions, signers)
-  } else if (exchanger_flag === EXCHANGER_SABER_STABLE_SWAP) {
+  if (exchanger_flag === EXCHANGER_SABER_STABLE_SWAP) {
+    // TODO: loadSaberStableSwap({ sniff
     const stableSwapInfo = await loadSaberStableSwap({
       connection,
       address: new PublicKey(pubkey),
@@ -725,20 +692,7 @@ async function swapOut(
     feeTokenAccount
   }
 
-  if ([EXCHANGER_SPL_TOKEN_SWAP].includes(exchanger_flag)) {
-    console.log("L727 - Not saber !")
-    const splTokenSwapInfo = await loadTokenSwapInfo(
-      connection,
-      new PublicKey(pubkey),
-      new PublicKey(program_id),
-      null
-    )
-
-    await onesolProtocol.createSwapOutByTokenSwapInstruction({
-      ...data,
-      splTokenSwapInfo,
-    }, instructions, signers)
-  } else if (exchanger_flag === EXCHANGER_SABER_STABLE_SWAP) {
+  if (exchanger_flag === EXCHANGER_SABER_STABLE_SWAP) {
     const stableSwapInfo = await loadSaberStableSwap({
       connection,
       address: new PublicKey(pubkey),
@@ -842,35 +796,12 @@ export async function createAccountsTransaction(
     signers
   })
 
-  const [swapInRoutes, swapOutRoutes] = routes
 
   let swapInOpenOrders
 
-  /*const swapInSerum = swapInRoutes.find((r: DistributionRoute) => r.exchanger_flag === EXCHANGER_SERUM_DEX)
-
-  if (swapInSerum) {
-    swapInOpenOrders = await onesolProtocol.findOrCreateOpenOrdersAccount({
-      market: new PublicKey(swapInSerum.pubkey),
-      owner: wallet.publicKey,
-      serumProgramId: SERUM_PROGRAM_ID,
-      instructions,
-      signers
-    })
-  }*/
 
   let swapOutOpenOrders
 
-  /*const swapOutSerum = swapOutRoutes.find((r: DistributionRoute) => r.exchanger_flag === EXCHANGER_SERUM_DEX)
-
-  if (swapOutSerum) {
-    swapOutOpenOrders = await onesolProtocol.findOrCreateOpenOrdersAccount({
-      market: new PublicKey(swapOutSerum.pubkey),
-      owner: wallet.publicKey,
-      serumProgramId: SERUM_PROGRAM_ID,
-      instructions,
-      signers
-    })
-  }*/
 
   return {
     swapInfo,
@@ -1101,10 +1032,10 @@ export async function onesolProtocolSwap(
             description: "Please try again",
             message: "Swap trade cancelled.",
             type: "error",
-            duration: 10 
+            duration: 10
           });
         } else {
-          throw(e)
+          throw (e)
         }
       }
     }
@@ -1120,19 +1051,9 @@ export async function onesolProtocolSwap(
       AccountLayout.span
     );
 
-    //const serum = routes.find((r: DistributionRoute) => r.exchanger_flag === EXCHANGER_SERUM_DEX)
 
     let openOrders: PublicKey
 
-    /*if (serum) {
-      openOrders = await onesolProtocol.findOrCreateOpenOrdersAccount({
-        market: new PublicKey(serum.pubkey),
-        owner: wallet.publicKey,
-        serumProgramId: SERUM_PROGRAM_ID,
-        instructions,
-        signers
-      })
-    }*/
 
     const fromMintKey = new PublicKey(A.mintAddress)
     const toMintKey = new PublicKey(B.mintAddress)
