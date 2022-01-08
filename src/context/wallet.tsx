@@ -10,35 +10,14 @@ import { Button, Modal } from "antd";
 import Wallet from "@project-serum/sol-wallet-adapter";
 import { WalletAdapter } from '@solana/wallet-adapter-base'
 import { SolletWalletAdapter } from "@solana/wallet-adapter-sollet";
-import { SolongWalletAdapter } from "@solana/wallet-adapter-solong";
-import { MathWalletWalletAdapter } from "@solana/wallet-adapter-mathwallet";
-import { PhantomWalletAdapter } from "@solana/wallet-adapter-phantom";
-import { SafePalWalletAdapter } from "@solana/wallet-adapter-safepal";
-import { Coin98WalletAdapter } from '@solana/wallet-adapter-coin98'
-import { SlopeWalletAdapter } from '@solana/wallet-adapter-slope'
-import { BloctoWalletAdapter } from '@solana/wallet-adapter-blocto'
-import { BitpieWalletAdapter } from '@solana/wallet-adapter-bitpie'
-import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare'
 import { LedgerWalletAdapter } from "@solana/wallet-adapter-ledger"
-
-import { SolareumWalletAdapter } from '../wallet-adapters'
 
 import { useConnectionConfig } from "../utils/connection";
 import { useLocalStorageState } from "../utils/utils";
 import { notify } from "../utils/notifications";
 
-import PhantomLogo from "../assets/phantom.png";
 import SolletLogo from "../assets/sollet.svg"
-import SafePalLogo from '../assets/safepal_white.svg'
-import Coin98Logo from '../assets/coin98.png'
-import SlopeLogo from '../assets/slope.png'
-import BitpieLogo from '../assets/bitpie.png'
-import BloctoLogo from '../assets/blocto.png'
-import SolflareLogo from '../assets/solflare.svg'
 import LedgerLogo from '../assets/ledger.svg'
-import SolongLogo from "../assets/solong.png"
-import MathWalletLogo from "../assets/mathwallet.svg"
-import SolareumLogo from '../assets/solareum.png'
 
 const PHANTOM_URL = "https://www.phantom.app"
 const SOLAREUM_URL = 'https://solareum.app'
@@ -47,12 +26,6 @@ const SAFEPAL_URL = "https://safepal.app"
 const COIN98_URL = "https://coin98.app"
 
 export const WALLET_PROVIDERS = [
-  {
-    name: "Phantom",
-    url: PHANTOM_URL,
-    icon: PhantomLogo,
-    adapter: PhantomWalletAdapter,
-  },
   {
     key: "sollet.io",
     name: "Sollet Web",
@@ -67,80 +40,11 @@ export const WALLET_PROVIDERS = [
     adapter: SolletWalletAdapter,
   },
   {
-    key: "Solflare Web",
-    name: "Solflare Web",
-    url: "https://solflare.com/access-wallet",
-    icon: SolflareLogo,
-  },
-  {
-    key: "Solflare Extension",
-    name: "Solflare Extension",
-    url: "https://solflare.com/access-wallet/extension",
-    icon: SolflareLogo,
-    adapter: SolflareWalletAdapter,
-  },
-  {
     key: "Ledger",
     name: "Ledger",
     url: "https://www.ledger.com",
     icon: LedgerLogo,
     adapter: LedgerWalletAdapter,
-  },
-  {
-    key: "Solong",
-    name: "Solong",
-    url: "https://www.solong.com",
-    icon: SolongLogo,
-    adapter: SolongWalletAdapter,
-  },
-  {
-    key: "MathWallet",
-    name: "MathWallet",
-    url: MATH_WALLET_URL,
-    icon: MathWalletLogo,
-    adapter: MathWalletWalletAdapter,
-  },
-  {
-    key: "SafePalWallet",
-    name: "SafePal",
-    url: SAFEPAL_URL,
-    icon: SafePalLogo,
-    adapter: SafePalWalletAdapter,
-  },
-  {
-    key: "Coin98",
-    name: "Coin98",
-    url: COIN98_URL,
-    icon: Coin98Logo,
-    adapter: Coin98WalletAdapter,
-  },
-  {
-    key: 'Blocto',
-    name: 'Blocto',
-    icon: BloctoLogo,
-    url: 'https://blocto.portto.io',
-    adapter: BloctoWalletAdapter
-  },
-  {
-    key: 'Slope',
-    name: 'Slope',
-    icon: SlopeLogo,
-    url: 'https://slope.finance',
-    adapter: SlopeWalletAdapter
-  },
-  {
-    key: 'Bitpie',
-    name: 'Bitpie',
-    icon: BitpieLogo,
-    url: 'https://bitpie.com',
-    adapter: BitpieWalletAdapter
-  },
-  {
-    key: 'Solareum',
-    name: 'Solareum',
-    icon: SolareumLogo,
-    url: SOLAREUM_URL,
-    adapter: SolareumWalletAdapter
   },
 ];
 
